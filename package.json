@@ -1,0 +1,16 @@
+{
+  "name": "HelseDiscord",
+  "version": "0.2.0",
+  "description": "",
+  "main": "main.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "type": "module",
+  "author": "Ulrik Brun",
+  "license": "ISC",
+  "dependencies": {
+    "@types/node": "^18.11.18",
+    "discord.js": "^14.8.0"
+  }
+}
