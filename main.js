@@ -1,6 +1,6 @@
 import * as D from 'discord.js'
 import { Logs } from './Logging.js'
-import {} from './Commands.js'
+import { SendEmbedMenu } from './Commands.js'
 import * as fs from 'node:fs/promises';
 
 
@@ -14,13 +14,13 @@ const Bot = new D.Client({intents: [
 })
 
 // Loads the config and the starts the bot
-let Config
+let Config = JSON.parse(await fs.readFile("Config.json"))
 await Startup()
 async function Startup() {
     try {
-        await Bot.login("")
+        await Bot.login(Config.Token)
     } catch(e) {
-        Config.Debug ? await Logs(e) : false
+        await Logs(e)
         await Startup()
         return
     }
@@ -37,25 +37,63 @@ Bot.on(D.Events.MessageCreate, async CTX => {
         if (Bot.user?.id)
         if (CTX.author.id == Bot.user.id) throw("Reply is from bot");
         switch(CTX.content.toUpperCase()) {
-            case("//"):
+            case("11"):
+                await SendEmbedMenu(CTX)
                 break;
             default:
                 break;
         }
     } catch(e) {
-        Config.Debug ? await Logs(e) : false
+        await Logs(e)
         return
     }
 })
 
+
+let TicketCount = 0
+
 Bot.on(D.Events.InteractionCreate, async I => {
     try {
-        // const Tup = I.message.components[0].components[0]
-        // const Tdow = I.message.components[0].components[1]
-        
+
+        // Fidn the evryone role id, and catch it.
+        const EveryoneRole = I.guild.roles.cache.find(r => r.name == "@everyone")
+
+        // Checks if the interaction is a selectmenu and if the value is equal, create channel.
+        if (I.isStringSelectMenu()) {
+            console.log(I.values[0])
+            const CreatedChannel = I.guild.channels.create({
+                name: `-${I.values[0]} ${TicketCount++}}`,
+                type: D.ChannelType.GuildText,
+                parent: "1139284836574564382",
+
+                permissionOverwrites: [
+                    {
+                        id: EveryoneRole.id,
+                        deny: ['1024']
+                    },
+                    {
+                        id: I.user.id,
+                        allow: ['1024']
+                    },
+
+                    {
+                        id: "1138905077759889501",
+                        allow: ['1024']
+                    },
+                 ]
+            });
+
+            // Sends a message to the given channel
+            (await CreatedChannel).send({content: `<@${I.user.id}> har opprettet en sak`})
+        }
+
+        // Remove interaction error beacuse Henning wanted it...
+        I.update({})
+
+        // Calmly exit the function
+        return
     } catch(e) {
-        Config.Debug ? await Logs(e) : false
+        await Logs(e)
         return
     }
-    
 })
