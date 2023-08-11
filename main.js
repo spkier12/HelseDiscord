@@ -1,20 +1,25 @@
 import * as D from 'discord.js'
 import { Logs } from './Logging.js'
-import { SendEmbedMenu } from './Commands.js'
+import { SendEmbedMenu, Close } from './Commands.js'
 import * as fs from 'node:fs/promises';
 
+// Loads the ticket count from file
+let TicketCount = JSON.parse(await fs.readFile("Settings.json")).TicketCount
+
+// Loads the config and the starts the bot
+let Config = JSON.parse(await fs.readFile("Config.json"))
 
 // Create a new discord client with requested intents for gateway to listen to
 const Bot = new D.Client({intents: [
     D.GatewayIntentBits.GuildMembers,
+    D.GatewayIntentBits.GuildMessageReactions,
     D.GatewayIntentBits.GuildMessages,
     D.GatewayIntentBits.MessageContent,
     D.GatewayIntentBits.Guilds],
     partials: [D.Partials.Channel, D.Partials.User, D.Partials.Message]
 })
 
-// Loads the config and the starts the bot
-let Config = JSON.parse(await fs.readFile("Config.json"))
+
 await Startup()
 async function Startup() {
     try {
@@ -37,8 +42,14 @@ Bot.on(D.Events.MessageCreate, async CTX => {
         if (Bot.user?.id)
         if (CTX.author.id == Bot.user.id) throw("Reply is from bot");
         switch(CTX.content.toUpperCase()) {
-            case("11"):
+            case("SAKSBEHANDLER START"):
                 await SendEmbedMenu(CTX)
+                break;
+            case("SAKSBEHANDLER STENG"):
+                await Close(CTX)
+                break;
+            case("SB STENG"):
+                await Close(CTX)
                 break;
             default:
                 break;
@@ -50,48 +61,41 @@ Bot.on(D.Events.MessageCreate, async CTX => {
 })
 
 
-let TicketCount = 0
 
 Bot.on(D.Events.InteractionCreate, async I => {
     try {
-
-        // Fidn the evryone role id, and catch it.
+        // Get the everyone role from the guild the interaction is from and save it to a variable
         const EveryoneRole = I.guild.roles.cache.find(r => r.name == "@everyone")
 
-        // Checks if the interaction is a selectmenu and if the value is equal, create channel.
+        // Check if the interaction is a string select menu
         if (I.isStringSelectMenu()) {
-            console.log(I.values[0])
-            const CreatedChannel = I.guild.channels.create({
-                name: `-${I.values[0]} ${TicketCount++}}`,
-                type: D.ChannelType.GuildText,
-                parent: "1139284836574564382",
 
-                permissionOverwrites: [
-                    {
-                        id: EveryoneRole.id,
-                        deny: ['1024']
-                    },
-                    {
-                        id: I.user.id,
-                        allow: ['1024']
-                    },
+            // If the interaction is a string select menu and the custom id is menuSelect then create a channel
+            if (I.customId == "menuSelect"){
+                const CreatedChannel = I.guild.channels.create({
+                    name: `${I.values[0]} ${TicketCount++}}`,
+                    type: D.ChannelType.GuildText,
+                    parent: Config.ParentID,
+                    permissionOverwrites: [
+                        {id: EveryoneRole.id, deny: ['1024']},
+                        {id: I.user.id, allow: ['1024']},
+                        {id: "1138905077759889501", allow: ['1024']},
+                     ]
+                });
 
-                    {
-                        id: "1138905077759889501",
-                        allow: ['1024']
-                    },
-                 ]
-            });
-
-            // Sends a message to the given channel
-            (await CreatedChannel).send({content: `<@${I.user.id}> har opprettet en sak`})
+            // Send a message to the channel that was created with the information about the ticket
+            (await CreatedChannel).send({content: `
+            > ❗️ <@${I.user.id}> Sak laget dato: ${new Date().toLocaleDateString()}
+            > ❗️ Ditt saks nummer er: **HT%${TicketCount -1}**
+            
+            > ❗️For å stenge saken skriv    **SAKSBEHANDLER STENG**  Eller  **SB STENG**\n`})}
         }
 
-        // Remove interaction error beacuse Henning wanted it...
-        I.update({})
+        // Save the ticket count to file
+        await fs.writeFile("Settings.json", JSON.stringify({"TicketCount": TicketCount}))
 
-        // Calmly exit the function
-        return
+        // Removes the interaction from the queue so it doesn't get stuck
+        I.update({})
     } catch(e) {
         await Logs(e)
         return

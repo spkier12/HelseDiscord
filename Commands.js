@@ -7,8 +7,6 @@ export async function SendEmbedMenu(ctx) {
     const menu = new D.StringSelectMenuBuilder()
     .setCustomId('menuSelect')
     .setPlaceholder('Velg nedenfor for åpne sak')
-    // .setMinValues(1)
-    // .setMaxValues(2)
     menu.addOptions(
         new D.StringSelectMenuOptionBuilder()
             .setLabel("Avvik")
@@ -40,4 +38,16 @@ export async function SendEmbedMenu(ctx) {
         embeds: [embed],
         components: [rowmenu]
     })
+}
+
+// Closes the ticket
+export async function Close(ctx) {
+    try {
+        if (ctx.channel.parentId != "1139284836574564382") throw("Channel is not a ticket")
+        await ctx.channel.delete()
+    } catch (e) {
+        await ctx.channel.send({content: "Kunne ikke lukke saken"})
+        await Logs(e)
+        return
+    }
 }
