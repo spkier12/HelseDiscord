@@ -1,6 +1,6 @@
 import * as D from 'discord.js'
 import { Logs } from './Logging.js'
-import { SendEmbedMenu, Close } from './Commands.js'
+import { SendEmbedMenu, Close, AddRoleToCase } from './Commands.js'
 import * as fs from 'node:fs/promises';
 
 // Loads the ticket count from file
@@ -52,6 +52,7 @@ Bot.on(D.Events.MessageCreate, async CTX => {
                 await Close(CTX)
                 break;
             default:
+                await AddRoleToCase(CTX, CTX.content)
                 break;
         }
     } catch(e) {
@@ -88,7 +89,16 @@ Bot.on(D.Events.InteractionCreate, async I => {
             > ❗️ <@${I.user.id}> Sak laget dato: ${new Date().toLocaleDateString()}
             > ❗️ Ditt saks nummer er: **HT%${TicketCount -1}**
             
-            > ❗️For å stenge saken skriv    **SAKSBEHANDLER STENG**  Eller  **SB STENG**\n`})}
+            > ❗️For å stenge saken skriv    **SAKSBEHANDLER STENG**  Eller  **SB STENG**\n
+
+            For å legge til flere folk som kan behandle/se saken **tag rollen** nedenfor under her har du et valg.
+            > sykehusdirektør 
+            > ambulansesjef 
+            > klinikkleder medisinsk 
+            > klinikkleder kirurgi 
+            > assisterende ambulansesjef 
+            > assisterende sykehusdirektør
+            `})}
         }
 
         // Save the ticket count to file
