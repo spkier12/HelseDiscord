@@ -81,24 +81,18 @@ Bot.on(D.Events.InteractionCreate, async I => {
                         {id: EveryoneRole.id, deny: ['1024']},
                         {id: I.user.id, allow: ['1024']},
                         {id: "1138905077759889501", allow: ['1024']},
+                        {id: "222043022450229249", allow: ['1024']},
                      ]
                 });
 
             // Send a message to the channel that was created with the information about the ticket
             (await CreatedChannel).send({content: `
             > ❗️ <@${I.user.id}> Sak laget dato: ${new Date().toLocaleDateString()}
-            > ❗️ Ditt saks nummer er: **HT%${TicketCount -1}**
-            
+            > ❗️ Ditt saks nummer er: **${I.values[0]}%${TicketCount -1}**
             > ❗️For å stenge saken skriv    **SAKSBEHANDLER STENG**  Eller  **SB STENG**\n
 
-            For å legge til flere folk som kan behandle/se saken **tag rollen** nedenfor under her har du et valg.
-            > sykehusdirektør 
-            > ambulansesjef 
-            > klinikkleder medisinsk 
-            > klinikkleder kirurgi 
-            > assisterende ambulansesjef 
-            > assisterende sykehusdirektør
-            `})}
+            For å inkludere din nærmeste leder, **tag rollen**. Dette gjelder også for å inkl. personer i saken.
+            Direktører og helse- og omsorgsdepartement er automatisk inkludert.`})}
         }
 
         // Save the ticket count to file

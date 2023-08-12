@@ -11,7 +11,7 @@ export async function SendEmbedMenu(ctx) {
         new D.StringSelectMenuOptionBuilder()
             .setLabel("Avvik")
             .setValue("Avvik")
-            .setDescription('Rapporter Avik/hendelse'),
+            .setDescription('Rapporter avvik/hendelse'),
 
         new D.StringSelectMenuOptionBuilder()
             .setLabel("Tilbakemeldinger/Forslag")
@@ -31,7 +31,8 @@ export async function SendEmbedMenu(ctx) {
     const embed = new D.EmbedBuilder()
         .setTitle('SaksBehandler')
         .setDescription('Her kan du opprette en sak for å få hjelp fra en saksbehandler eller klage på en avgjørelse, en ansatt eller annen etat \n\n Velg en av kategoriene under for å opprette en sak')
-        .setImage('https://i.imgur.com/xgZvWwl.png')
+        // .setImage('https://i.imgur.com/xgZvWwl.png')
+        .setImage('https://i.imgur.com/8y2xvBL.png')
 
     // Send to channel
     await ctx.channel.send({
