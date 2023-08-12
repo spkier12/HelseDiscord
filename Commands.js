@@ -78,7 +78,7 @@ export async function AddRoleToCase(ctx, wrole) {
             await ctx.channel.permissionOverwrites.edit(role.id, {"1024": true})
 
             // Send a message back to channel to let end user know that the role has been added to the ticket channel and that the user now has access to the ticket
-            await ctx.channel.send(`${wrole} Har nå tilgang til saken din.`)
+            await ctx.channel.send(`${wrole} har nå fått innsyn i saken din.`)
         }
 
         throw("Could not find Role/User, perhaps that was intentional")
