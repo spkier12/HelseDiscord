@@ -88,3 +88,32 @@ export async function AddRoleToCase(ctx, wrole) {
     }
 
 }
+
+export async function CreateChannelEmebed(I, NewCC, TicketCount) {
+    try {
+        // Discord Embed that shows case number and user
+        const Embed = new D.EmbedBuilder()
+            .setTitle(`SaksBehandler`)
+            .setColor("#ff0000")
+            .setDescription(`\n\n
+            For å stenge saken skriv    **SAKSBEHANDLER STENG**  Eller  **SB STENG**
+
+            For å inkludere din nærmeste leder, **tag rollen**. Dette gjelder også for å inkl. personer i saken.
+            Direktører og helse- og omsorgsdepartement er automatisk inkludert.
+
+
+            -
+            \n\n`)
+            .addFields(
+                {name: `❗️${new Date().toLocaleDateString()}`, value: `${I.user.username} opprettet en sak`, inline: true},
+                {name: `❗️SaksNummer`, value: `${I.values[0]}${TicketCount -1}`, inline: true},
+            )
+
+        // Find channel by id and send embed
+        await I.guild.channels.cache.get(NewCC).send({embeds: [Embed]})
+
+    } catch (e) {
+        await Logs(e)
+        return
+    }
+}

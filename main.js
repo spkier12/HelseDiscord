@@ -1,6 +1,6 @@
 import * as D from 'discord.js'
 import { Logs } from './Logging.js'
-import { SendEmbedMenu, Close, AddRoleToCase } from './Commands.js'
+import { SendEmbedMenu, Close, AddRoleToCase, CreateChannelEmebed } from './Commands.js'
 import * as fs from 'node:fs/promises';
 
 // Loads the ticket count from file
@@ -85,14 +85,9 @@ Bot.on(D.Events.InteractionCreate, async I => {
                      ]
                 });
 
-            // Send a message to the channel that was created with the information about the ticket
-            (await CreatedChannel).send({content: `
-            > ❗️ <@${I.user.id}> Sak laget dato: ${new Date().toLocaleDateString()}
-            > ❗️ Ditt saks nummer er: **${I.values[0]}%${TicketCount -1}**
-            > ❗️For å stenge saken skriv    **SAKSBEHANDLER STENG**  Eller  **SB STENG**\n
-
-            For å inkludere din nærmeste leder, **tag rollen**. Dette gjelder også for å inkl. personer i saken.
-            Direktører og helse- og omsorgsdepartement er automatisk inkludert.`})}
+                // Create a embed in the channel that was just created
+                await CreateChannelEmebed(I, (await CreatedChannel).id, TicketCount)
+            }
         }
 
         // Save the ticket count to file
