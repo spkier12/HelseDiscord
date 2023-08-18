@@ -46,10 +46,10 @@ Bot.on(D.Events.MessageCreate, async CTX => {
                 await SendEmbedMenu(CTX)
                 break;
             case("SAKSBEHANDLER STENG"):
-                await Close(CTX)
+                await Close(CTX, Config.DChannel)
                 break;
             case("SB STENG"):
-                await Close(CTX)
+                await Close(CTX, Config.DChannel)
                 break;
             default:
                 await AddRoleToCase(CTX, CTX.content)

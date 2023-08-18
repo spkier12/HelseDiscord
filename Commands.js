@@ -1,5 +1,6 @@
 import * as D from 'discord.js'
 import { Logs } from './Logging.js'
+import * as fs from 'node:fs/promises';
 
 
 //Send a message to the given channel where a menu of selection
@@ -31,7 +32,6 @@ export async function SendEmbedMenu(ctx) {
     const embed = new D.EmbedBuilder()
         .setTitle('SaksBehandler')
         .setDescription('Her kan du opprette en sak for å få hjelp fra en saksbehandler eller klage på en avgjørelse, en ansatt eller annen etat \n\n Velg en av kategoriene under for å opprette en sak')
-        // .setImage('https://i.imgur.com/xgZvWwl.png')
         .setImage('https://i.imgur.com/8y2xvBL.png')
 
     // Send to channel
@@ -42,9 +42,21 @@ export async function SendEmbedMenu(ctx) {
 }
 
 // Closes the ticket
-export async function Close(ctx) {
+export async function Close(ctx, DChannel) {
     try {
         if (ctx.channel.parentId != "1139284836574564382") throw("Channel is not a ticket")
+        if (ctx.channel.id == DChannel) {
+            await ctx.channel.send("Denne kanalen kan ikke slettes, den er ment for å lese tidligere saker.")
+            return
+        }
+
+        // Find channel by id
+        const channel = ctx.guild.channels.cache.get(DChannel)
+        // Send file from Memory to channel with content
+        await channel.send({files: [`Memory/${ctx.channel.name}.ulrik`], content: `Saken er nå lukket av ${ctx.author.username}`})
+
+
+        // Delete Channel
         await ctx.channel.delete()
     } catch (e) {
         await ctx.channel.send({content: "Kunne ikke lukke saken"})
@@ -81,7 +93,8 @@ export async function AddRoleToCase(ctx, wrole) {
             await ctx.channel.send(`${wrole} har nå fått innsyn i saken din.`)
         }
 
-        throw("Could not find Role/User, perhaps that was intentional")
+        await Logs("Could not find Role/User, perhaps that was intentional Saving content to memory\n")
+        await SaveToMemory(ctx)
     } catch (e) {
         await Logs(e)
         return
@@ -112,6 +125,17 @@ export async function CreateChannelEmebed(I, NewCC, TicketCount) {
         // Find channel by id and send embed
         await I.guild.channels.cache.get(NewCC).send({embeds: [Embed]})
 
+    } catch (e) {
+        await Logs(e)
+        return
+    }
+}
+
+// Store messages in memory
+async function SaveToMemory(ctx) {
+    try {
+        // Store ctx.content to file named ctx.channel.name in the folder "Memory" and append the file
+        await fs.appendFile(`Memory/${ctx.channel.name}.ulrik`, `Author: ${ctx.author.username} Message: ${ctx.content}\n`)
     } catch (e) {
         await Logs(e)
         return
