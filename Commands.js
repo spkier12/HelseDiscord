@@ -53,13 +53,14 @@ export async function Close(ctx, DChannel) {
         // Find channel by id
         const channel = ctx.guild.channels.cache.get(DChannel)
         // Send file from Memory to channel with content
-        await channel.send({files: [`Memory/${ctx.channel.name}.ulrik`], content: `Saken er nå lukket av ${ctx.author.username}`})
+        await channel.send({files: [`Memory/${ctx.channel.name}.txt`], content: `Saken er nå lukket av ${ctx.author.username}`})
 
 
         // Delete Channel
         await ctx.channel.delete()
     } catch (e) {
         await ctx.channel.send({content: "Kunne ikke lukke saken"})
+        await ctx.channel.delete()
         await Logs(e)
         return
     }
@@ -104,6 +105,9 @@ export async function AddRoleToCase(ctx, wrole) {
 
 export async function CreateChannelEmebed(I, NewCC, TicketCount) {
     try {
+        // Find nickname of user
+        const Nickname = await I.guild.members.fetch(I.user.id)
+
         // Discord Embed that shows case number and user
         const Embed = new D.EmbedBuilder()
             .setTitle(`SaksBehandler`)
@@ -112,13 +116,13 @@ export async function CreateChannelEmebed(I, NewCC, TicketCount) {
             For å stenge saken skriv    **SAKSBEHANDLER STENG**  Eller  **SB STENG**
 
             For å inkludere din nærmeste leder, **tag rollen**. Dette gjelder også for å inkl. personer i saken.
-            Direktører og helse- og omsorgsdepartement er automatisk inkludert.
+            *Direktører og helse- og omsorgsdepartement er automatisk inkludert.*
 
 
             -
             \n\n`)
             .addFields(
-                {name: `❗️${new Date().toLocaleDateString()}`, value: `${I.user.username} opprettet en sak`, inline: true},
+                {name: `❗️${new Date().toLocaleDateString()}`, value: `${Nickname.displayName} opprettet en sak`, inline: true},
                 {name: `❗️SaksNummer`, value: `${I.values[0]}${TicketCount -1}`, inline: true},
             )
 
@@ -135,7 +139,7 @@ export async function CreateChannelEmebed(I, NewCC, TicketCount) {
 async function SaveToMemory(ctx) {
     try {
         // Store ctx.content to file named ctx.channel.name in the folder "Memory" and append the file
-        await fs.appendFile(`Memory/${ctx.channel.name}.ulrik`, `Author: ${ctx.author.username} Message: ${ctx.content}\n`)
+        await fs.appendFile(`Memory/${ctx.channel.name}.txt`, `Author: ${ctx.author.username} Message: ${ctx.content}\n`)
     } catch (e) {
         await Logs(e)
         return

@@ -65,6 +65,11 @@ Bot.on(D.Events.MessageCreate, async CTX => {
 
 Bot.on(D.Events.InteractionCreate, async I => {
     try {
+
+        // fetch user from guild
+        let us = await I.guild.members.fetch(I.user.id)
+        us.displayName
+
         // Get the everyone role from the guild the interaction is from and save it to a variable
         const EveryoneRole = I.guild.roles.cache.find(r => r.name == "@everyone")
 
