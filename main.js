@@ -67,6 +67,7 @@ Bot.on(D.Events.MessageCreate, async CTX => {
 
 Bot.on(D.Events.InteractionCreate, async I => {
     try {
+        TicketCount++
         // Check if the interaction is a string select menu
         if (I.isStringSelectMenu()) {
 
@@ -77,7 +78,8 @@ Bot.on(D.Events.InteractionCreate, async I => {
         }
 
         // Save the ticket count to file
-        await fs.writeFile("Settings.json", JSON.stringify({"TicketCount": TicketCount}))
+        await fs.writeFile("Settings.json", JSON.stringify({"TicketCount": TicketCount+1}))
+        await Logs("\nSaving TicketCount")
 
         // Removes the interaction from the queue so it doesn't get stuck
         I.update({})

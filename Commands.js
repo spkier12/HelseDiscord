@@ -113,14 +113,13 @@ export async function CreateChannelEmebed(I, Config, TicketCount) {
         const EveryoneRole = I.guild.roles.cache.find(r => r.name == "@everyone")
 
         const CreatedChannel = I.guild.channels.create({
-            name: `${I.values[0]} ${TicketCount++}}`,
+            name: `${I.values[0]} ${TicketCount}}`,
             type: D.ChannelType.GuildText,
             parent: Config.ParentID,
             permissionOverwrites: [
                 {id: EveryoneRole.id, deny: ['1024']},
                 {id: I.user.id, allow: ['1024']},
                 {id: "1138905077759889501", allow: ['1024']},
-                {id: "222043022450229249", deny: ['1024']},
              ]
         });
         
@@ -147,6 +146,11 @@ export async function CreateChannelEmebed(I, Config, TicketCount) {
 
         // Find channel by id and send embed
         await I.guild.channels.cache.get((await CreatedChannel).id).send({embeds: [Embed]})
+
+        // Save ticketcount
+        await fs.writeFile("Settings.json", JSON.stringify({"TicketCount": TicketCount+1}))
+        await Logs("\nSaving TicketCount")
+
 
     } catch (e) {
         await Logs(e)
