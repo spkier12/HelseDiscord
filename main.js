@@ -42,7 +42,7 @@ Bot.on(D.Events.MessageCreate, async CTX => {
         if (Bot.user?.id)
         if (CTX.author.id == Bot.user.id) throw("Reply is from bot");
         switch(CTX.content.toUpperCase()) {
-            case("SAKSBEHANDLER START"):
+            case("SAKSBEHANDLER START490"):
                 await SendEmbedMenu(CTX)
                 break;
             case("SAKSBEHANDLER STENG"):
@@ -50,6 +50,8 @@ Bot.on(D.Events.MessageCreate, async CTX => {
                 break;
             case("SB STENG"):
                 await Close(CTX, Config.DChannel)
+                break;
+            case("HELSE BISTAND490"):
                 break;
             default:
                 await AddRoleToCase(CTX, CTX.content)
@@ -65,33 +67,12 @@ Bot.on(D.Events.MessageCreate, async CTX => {
 
 Bot.on(D.Events.InteractionCreate, async I => {
     try {
-
-        // fetch user from guild
-        let us = await I.guild.members.fetch(I.user.id)
-        us.displayName
-
-        // Get the everyone role from the guild the interaction is from and save it to a variable
-        const EveryoneRole = I.guild.roles.cache.find(r => r.name == "@everyone")
-
         // Check if the interaction is a string select menu
         if (I.isStringSelectMenu()) {
 
             // If the interaction is a string select menu and the custom id is menuSelect then create a channel
             if (I.customId == "menuSelect"){
-                const CreatedChannel = I.guild.channels.create({
-                    name: `${I.values[0]} ${TicketCount++}}`,
-                    type: D.ChannelType.GuildText,
-                    parent: Config.ParentID,
-                    permissionOverwrites: [
-                        {id: EveryoneRole.id, deny: ['1024']},
-                        {id: I.user.id, allow: ['1024']},
-                        {id: "1138905077759889501", allow: ['1024']},
-                        {id: "222043022450229249", allow: ['1024']},
-                     ]
-                });
-
-                // Create a embed in the channel that was just created
-                await CreateChannelEmebed(I, (await CreatedChannel).id, TicketCount)
+                await CreateChannelEmebed(I, Config, TicketCount)
             }
         }
 

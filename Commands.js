@@ -103,8 +103,27 @@ export async function AddRoleToCase(ctx, wrole) {
 
 }
 
-export async function CreateChannelEmebed(I, NewCC, TicketCount) {
+export async function CreateChannelEmebed(I, Config, TicketCount) {
     try {
+
+        // fetch user from guild
+        let us = await I.guild.members.fetch(I.user.id)
+
+        // Get the everyone role from the guild the interaction is from and save it to a variable
+        const EveryoneRole = I.guild.roles.cache.find(r => r.name == "@everyone")
+
+        const CreatedChannel = I.guild.channels.create({
+            name: `${I.values[0]} ${TicketCount++}}`,
+            type: D.ChannelType.GuildText,
+            parent: Config.ParentID,
+            permissionOverwrites: [
+                {id: EveryoneRole.id, deny: ['1024']},
+                {id: I.user.id, allow: ['1024']},
+                {id: "1138905077759889501", allow: ['1024']},
+                {id: "222043022450229249", deny: ['1024']},
+             ]
+        });
+        
         // Find nickname of user
         const Nickname = await I.guild.members.fetch(I.user.id)
 
@@ -127,7 +146,7 @@ export async function CreateChannelEmebed(I, NewCC, TicketCount) {
             )
 
         // Find channel by id and send embed
-        await I.guild.channels.cache.get(NewCC).send({embeds: [Embed]})
+        await I.guild.channels.cache.get((await CreatedChannel).id).send({embeds: [Embed]})
 
     } catch (e) {
         await Logs(e)
