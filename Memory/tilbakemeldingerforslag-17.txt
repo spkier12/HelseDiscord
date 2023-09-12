@@ -1,0 +1,13 @@
+Author: cptsigurd Message: Egen kanal for Sykehus/Legevakt slik at de kan få arbeidsro med passient men har også mulighet for å være på kanal 3
+Author: cptsigurd Message: da kan de få alarm på Sykehus/Legevakt eller selv gå på kanal 3 når de får alarm, dette er for at de kan behandle passienter uten å hørre mye anrop på radio
+Author: known_crispy Message: Det er dessverre ikke mulighet for å være i 2 talegrupper samtidig. Det som går av å gjøre, er å lage en talegruppe til de som er på sykehuset, feks TG: 3.1
+Kan forstå at det blir mye prat på samband inni mellom
+Author: cptsigurd Message: Tenkte ikke 2 talegrupper samtidig men at det kan være mulig å være på en "stille" kanal frem til det er behov for en lege aktiv på tg 3 som du nevner å skaffe en tg gruppe 3.1 kunne vært bra
+Author: henningtm Message: Synes det er et godt forslag. Kan jo bruke callingen til å kontakte de som er i 3.1 f.eks
+Author: known_crispy Message: Da forsto jeg, et god forslag!
+Author: cptsigurd Message: Støtter den for det er mer realistisk at den pipe greia kommer opp. så kan man selv gå på TG.3 då om den er av'
+Author: cptsigurd Message: men også at legen eller andre i "stille kanal" er tilgjengelig på radio 3.1?
+Author: known_crispy Message: Det går an å innføre, at alle som er inne på sykehuset feks, er i TG 3.1 (Alle talegrupper fra 1-4 er lukket for nødetatene. Det vil også si også det etter **.**. Eks: 3.1 , 3.2 m.m)
+Kan forstå det kan bli mye prat når dere står og behandling inne på sykehuset og høre på alt annet som skjer.
+Author: cptsigurd Message: Avslutte denne siden den er ferdig?
+Author: henningtm Message: Yepp 🙂

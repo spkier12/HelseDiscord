@@ -20,9 +20,14 @@ export async function SendEmbedMenu(ctx) {
             .setDescription('Gi tilbakemelding eller forslag til forbedring'),
 
         new D.StringSelectMenuOptionBuilder()
-            .setLabel("Klage")
-            .setValue("Klage")
-            .setDescription(`Klage på en avgjørelse, en ansatt eller annen etat`),
+            .setLabel("Uønsket hendelse")
+            .setValue("Uønsket hendelse")
+            .setDescription(`Uønsket hendelse som har skjedd i helse`),
+
+        new D.StringSelectMenuOptionBuilder()
+            .setLabel("Intern-søknad")
+            .setValue("Intern-søknad")
+            .setDescription(`Send søknad her på interne stillinger i helse`),
     )
 
     const rowmenu = new D.ActionRowBuilder()
@@ -69,21 +74,28 @@ export async function Close(ctx, DChannel) {
 export async function AddRoleToCase(ctx, wrole) {
     try {
         let role = undefined
+
+        const messages = await ctx.content.split(" ")
         // Check if the channel is a ticket
         if (ctx.channel.parentId != "1139284836574564382") throw("Channel is not a ticket")
 
-        // Check if user mentioned a role
-        if (ctx.mentions.users.first()) {
-            role = ctx.mentions.users.first() || ctx.guild.users.cache.find(role => role.name === args.join(" "))
-            await AddC()
-            return
-        }
 
-        if (ctx.mentions.roles.first()) {
-            role = ctx.mentions.roles.first() || ctx.guild.roles.cache.find(role => role.name === args.join(" "))
-            await AddC()
-            return
+        // Check if user mentioned a role
+        console.log(`\n Mentioned message nr2 ${messages[1]}`)
+        if (messages[1] == undefined) {
+            if (ctx.mentions.users.first()) {
+                role = ctx.mentions.users.first() || ctx.guild.users.cache.find(role => role.name === args.join(" "))
+                await AddC()
+                return
+            }
+
+            if (ctx.mentions.roles.first()) {
+                role = ctx.mentions.roles.first() || ctx.guild.roles.cache.find(role => role.name === args.join(" "))
+                await AddC()
+                return
+            }
         }
+        
 
         // This function will not run if the user did not mention a role/user or if the role/user does not exist in the guild
         async function AddC() {
@@ -141,11 +153,16 @@ export async function CreateChannelEmebed(I, Config, TicketCount) {
             \n\n`)
             .addFields(
                 {name: `❗️${new Date().toLocaleDateString()}`, value: `${Nickname.displayName} opprettet en sak`, inline: true},
-                {name: `❗️SaksNummer`, value: `${I.values[0]}${TicketCount -1}`, inline: true},
+                {name: `❗️SaksNummer`, value: `${I.values[0]}${TicketCount}`, inline: true},
             )
 
         // Find channel by id and send embed
         await I.guild.channels.cache.get((await CreatedChannel).id).send({embeds: [Embed]})
+
+        if (I.values[0] == "Intern-søknad") {
+            await I.guild.channels.cache.get((await CreatedChannel).id).send(`\n Hei ${Nickname.displayName}, ` + "```\n\n Vi har mottatt din søknad om stillingen som Intern-søknad. \n\n Vi vil komme tilbake til deg så fort vi har behandlet søknaden din. \n\n Med vennlig hilsen, \n\n Helse- og omsorgsdepartementet```")
+
+        }
 
         // Save ticketcount
         await fs.writeFile("Settings.json", JSON.stringify({"TicketCount": TicketCount+1}))
