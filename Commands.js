@@ -49,7 +49,7 @@ export async function SendEmbedMenu(ctx) {
 //Send a message to the given channel where a menu of selection
 export async function SendEmbedMenu1(ctx) {
     const menu = new D.StringSelectMenuBuilder()
-    .setCustomId('menuSelect2')
+    .setCustomId('menuSelect1')
     .setPlaceholder('Velg nedenfor for åpne sak')
     menu.addOptions(
         new D.StringSelectMenuOptionBuilder()
@@ -66,11 +66,6 @@ export async function SendEmbedMenu1(ctx) {
             .setLabel("Henvisning til Lege")
             .setValue("Henvisning til Lege")
             .setDescription('Henvisning til Lege for behandling'),
-
-        new D.StringSelectMenuOptionBuilder()
-            .setLabel("Henvisning til Overlege")
-            .setValue("Henvisning til Overlege")
-            .setDescription('Henvisning til Overlege for behandling'),
 
         new D.StringSelectMenuOptionBuilder()
             .setLabel("Henvisning til Overlege")
@@ -219,6 +214,7 @@ export async function CreateChannelEmebed(I, Config, TicketCount) {
         // Save ticketcount
         await fs.writeFile("Settings.json", JSON.stringify({"TicketCount": TicketCount+1}))
         await Logs("\nSaving TicketCount")
+        await SaveToMemory(I)
 
 
     } catch (e) {
