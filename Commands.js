@@ -81,16 +81,20 @@ export async function AddRoleToCase(ctx, wrole) {
 
 
         // Check if user mentioned a role
-        console.log(`\n Mentioned message nr2 ${messages[1]}`)
+        console.log(`\n Mentioned message nr2 ${messages[1]} Replied: ${ctx.reference?.messageId}}`)
         if (messages[1] == undefined) {
-            if (ctx.mentions.users.first()) {
+            if (ctx.mentions.users.first() && ctx.reference?.messageId == null) {
                 role = ctx.mentions.users.first() || ctx.guild.users.cache.find(role => role.name === args.join(" "))
                 await AddC()
                 return
             }
 
-            if (ctx.mentions.roles.first()) {
+            if (ctx.mentions.roles.first() && ctx.reference?.messageId == null) {
                 role = ctx.mentions.roles.first() || ctx.guild.roles.cache.find(role => role.name === args.join(" "))
+                // Get all users in variable role
+                const usersWithRole = role.members.map(m => m.user.id);
+                console.log(usersWithRole)
+
                 await AddC()
                 return
             }
@@ -103,7 +107,7 @@ export async function AddRoleToCase(ctx, wrole) {
             await ctx.channel.permissionOverwrites.edit(role.id, {"1024": true})
 
             // Send a message back to channel to let end user know that the role has been added to the ticket channel and that the user now has access to the ticket
-            await ctx.channel.send(`${wrole} har nå fått innsyn i saken din.`)
+            await ctx.channel.send(`*${wrole}* har nå fått innsyn i saken din.`)
         }
 
         await Logs("Could not find Role/User, perhaps that was intentional Saving content to memory\n")
