@@ -46,6 +46,54 @@ export async function SendEmbedMenu(ctx) {
     })
 }
 
+//Send a message to the given channel where a menu of selection
+export async function SendEmbedMenu1(ctx) {
+    const menu = new D.StringSelectMenuBuilder()
+    .setCustomId('menuSelect2')
+    .setPlaceholder('Velg nedenfor for åpne sak')
+    menu.addOptions(
+        new D.StringSelectMenuOptionBuilder()
+            .setLabel("Henvisning til Pyskolgisk avdeling")
+            .setValue("Henvisning til Pyskolgisk avdeling")
+            .setDescription('Henvisning til Pyskolgisk avdeling for behandling'),
+
+        new D.StringSelectMenuOptionBuilder()
+            .setLabel("Henvisning til Fysioterapi")
+            .setValue("Henvisning til Fysioterapi")
+            .setDescription('Henvisning til Fysioterapi for behandling'),
+
+        new D.StringSelectMenuOptionBuilder()
+            .setLabel("Henvisning til Lege")
+            .setValue("Henvisning til Lege")
+            .setDescription('Henvisning til Lege for behandling'),
+
+        new D.StringSelectMenuOptionBuilder()
+            .setLabel("Henvisning til Overlege")
+            .setValue("Henvisning til Overlege")
+            .setDescription('Henvisning til Overlege for behandling'),
+
+        new D.StringSelectMenuOptionBuilder()
+            .setLabel("Henvisning til Overlege")
+            .setValue("Henvisning til Overlege")
+            .setDescription('Henvisning til Overlege for behandling'),
+    )
+
+    const rowmenu = new D.ActionRowBuilder()
+        .addComponents(menu);
+
+    // Embed to be above the menu
+    const embed = new D.EmbedBuilder()
+        .setTitle('SaksBehandler Henvisninger')
+        .setDescription(`Henvisninger til behandling i helse- og omsorgsdepartementet \n\n Velg en av kategoriene under for å opprette en sak for henvisning til behandling i helse- og omsorgsdepartementet`)
+        .setImage('https://i.imgur.com/8y2xvBL.png')
+
+    // Send to channel
+    await ctx.channel.send({
+        embeds: [embed],
+        components: [rowmenu]
+    })
+}
+
 // Closes the ticket
 export async function Close(ctx, DChannel) {
     try {
@@ -178,6 +226,7 @@ export async function CreateChannelEmebed(I, Config, TicketCount) {
         return
     }
 }
+
 
 // Store messages in memory
 async function SaveToMemory(ctx) {

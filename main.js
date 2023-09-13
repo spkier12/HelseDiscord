@@ -1,6 +1,6 @@
 import * as D from 'discord.js'
 import { Logs } from './Logging.js'
-import { SendEmbedMenu, Close, AddRoleToCase, CreateChannelEmebed } from './Commands.js'
+import { SendEmbedMenu, SendEmbedMenu1, Close, AddRoleToCase, CreateChannelEmebed } from './Commands.js'
 import * as fs from 'node:fs/promises';
 
 // Loads the ticket count from file
@@ -45,6 +45,9 @@ Bot.on(D.Events.MessageCreate, async CTX => {
             case("SAKSBEHANDLER START490"):
                 await SendEmbedMenu(CTX)
                 break;
+            case("SAKSBEHANDLER START491"):
+                await SendEmbedMenu1(CTX)
+                break;
             case("SAKSBEHANDLER STENG"):
                 await Close(CTX, Config.DChannel)
                 break;
@@ -73,6 +76,10 @@ Bot.on(D.Events.InteractionCreate, async I => {
 
             // If the interaction is a string select menu and the custom id is menuSelect then create a channel
             if (I.customId == "menuSelect"){
+                await CreateChannelEmebed(I, Config, TicketCount)
+            }
+
+            if (I.customId == "menuSelect1"){
                 await CreateChannelEmebed(I, Config, TicketCount)
             }
         }
