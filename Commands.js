@@ -54,23 +54,48 @@ export async function SendEmbedMenu1(ctx) {
     menu.addOptions(
         new D.StringSelectMenuOptionBuilder()
             .setLabel("Henvisning til Pyskolgisk avdeling")
-            .setValue("Henvisning til Pyskolgisk avdeling")
+            .setValue("Pyskolgisk")
             .setDescription('Henvisning til Pyskolgisk avdeling for behandling'),
 
         new D.StringSelectMenuOptionBuilder()
-            .setLabel("Henvisning til Fysioterapi")
-            .setValue("Henvisning til Fysioterapi")
-            .setDescription('Henvisning til Fysioterapi for behandling'),
+            .setLabel("Henvisning til Kardiolog")
+            .setValue("Kardiolog")
+            .setDescription('Henvisning til Kardiolog for behandling'),
 
         new D.StringSelectMenuOptionBuilder()
-            .setLabel("Henvisning til Lege")
-            .setValue("Henvisning til Lege")
-            .setDescription('Henvisning til Lege for behandling'),
+            .setLabel("Henvisning til Kirurg")
+            .setValue("Kirurg")
+            .setDescription('Henvisning til Kirurg for behandling'),
+
+        new D.StringSelectMenuOptionBuilder()
+            .setLabel("Henvisning til Anestesi")
+            .setValue("Anestesi")
+            .setDescription('Henvisning til Anestesi for behandling'),
+
+        new D.StringSelectMenuOptionBuilder()
+            .setLabel("Henvisning til Fysioterapeut")
+            .setValue("Fysioterapeut")
+            .setDescription('Henvisning til Fysioterapeut for behandling'),
 
         new D.StringSelectMenuOptionBuilder()
             .setLabel("Henvisning til Overlege")
-            .setValue("Henvisning til Overlege")
+            .setValue("Overlege")
             .setDescription('Henvisning til Overlege for behandling'),
+
+        new D.StringSelectMenuOptionBuilder()
+            .setLabel("Henvisning til Lege")
+            .setValue("Lege")
+            .setDescription('Henvisning til Lege for behandling'),
+
+        new D.StringSelectMenuOptionBuilder()
+            .setLabel("Henvisning til Fastlege")
+            .setValue("Fastlege")
+            .setDescription('Henvisning til Fastlege for behandling'),
+
+        new D.StringSelectMenuOptionBuilder()
+            .setLabel("Henvisning til Intern-Testing")
+            .setValue("Intern-Testing")
+            .setDescription('Henvisning til Intern-Testing for behandling'),
     )
 
     const rowmenu = new D.ActionRowBuilder()
@@ -107,8 +132,8 @@ export async function Close(ctx, DChannel) {
         // Delete Channel
         await ctx.channel.delete()
     } catch (e) {
-        await ctx.channel.send({content: "Kunne ikke lukke saken"})
-        await ctx.channel.delete()
+        await ctx.channel.send({content: "Kunne ikke lukke saken \n du må skrive noe i saken før den kan lukkes"})
+        // await ctx.channel.delete()
         await Logs(e)
         return
     }
@@ -171,22 +196,77 @@ export async function CreateChannelEmebed(I, Config, TicketCount) {
         // Get the everyone role from the guild the interaction is from and save it to a variable
         const EveryoneRole = I.guild.roles.cache.find(r => r.name == "@everyone")
 
-        const CreatedChannel = I.guild.channels.create({
-            name: `${I.values[0]} ${TicketCount}}`,
-            type: D.ChannelType.GuildText,
-            parent: Config.ParentID,
-            permissionOverwrites: [
-                {id: EveryoneRole.id, deny: ['1024']},
-                {id: I.user.id, allow: ['1024']},
-                {id: "1138905077759889501", allow: ['1024']},
-             ]
-        });
-        
         // Find nickname of user
         const Nickname = await I.guild.members.fetch(I.user.id)
 
+        switch (I.values[0]) {
+            case "Pyskolgisk":
+                await CreateChannelEmebednotdefault("890156127512330260")
+                break;
+            case "Kardiolog":
+                await CreateChannelEmebednotdefault("1148665904683556944")
+                break;
+            case "Kirurg":
+                await CreateChannelEmebednotdefault("890156290008031233")
+                break;
+            case "Anestesi":
+                await CreateChannelEmebednotdefault("1093305810009997312")
+                break;
+            case "Fysioterapeut":
+                await CreateChannelEmebednotdefault("1151822294797271060")
+                break;
+            case "Overlege":
+                await CreateChannelEmebednotdefault("882520832671383613")
+                break;
+            case "Lege":
+                await CreateChannelEmebednotdefault("882520835812913173")
+                break;
+            case "Fastlege":
+                await CreateChannelEmebednotdefault("1151877809137008640")
+                break;
+            case "Intern-Testing":
+                await CreateChannelEmebednotdefault("222043022450229249")
+                break;
+            default:
+                const CreatedChannel = I.guild.channels.create({
+                    name: `${I.values[0]} ${TicketCount}}`,
+                    type: D.ChannelType.GuildText,
+                    parent: Config.ParentID,
+                    permissionOverwrites: [
+                        {id: EveryoneRole.id, deny: ['1024']},
+                        {id: I.user.id, allow: ['1024']},
+                        {id: "1138905077759889501", allow: ['1024']},
+                     ]
+                });
+
+                // Create embed and send it to the channel that was created above
+                await Createembed(CreatedChannel)
+                break;
+        }
+
+        // If switch was not default then create the channel with default values
+        async function CreateChannelEmebednotdefault(id) {
+            const CreatedChannel = I.guild.channels.create({
+                name: `${I.values[0]} ${TicketCount}}`,
+                type: D.ChannelType.GuildText,
+                parent: Config.ParentID,
+                permissionOverwrites: [
+                    {id: EveryoneRole.id, deny: ['1024']},
+                    {id: I.user.id, allow: ['1024']},
+                    {id: "1138905077759889501", allow: ['1024']},
+                    {id: id, allow: ['1024']},
+                 ]
+            });
+
+            // Create embed and send it to the channel that was created above
+            await Createembed(CreatedChannel)
+        }
+
         // Discord Embed that shows case number and user
-        const Embed = new D.EmbedBuilder()
+        // Stores channel to txt file in Memory folder and appends the file with the content
+        async function Createembed(CreatedChannel) {
+            console.log(`\nCreate embded start`)
+            const Embed = new D.EmbedBuilder()
             .setTitle(`SaksBehandler`)
             .setColor("#ff0000")
             .setDescription(`\n\n
@@ -203,20 +283,16 @@ export async function CreateChannelEmebed(I, Config, TicketCount) {
                 {name: `❗️SaksNummer`, value: `${I.values[0]}${TicketCount}`, inline: true},
             )
 
-        // Find channel by id and send embed
-        await I.guild.channels.cache.get((await CreatedChannel).id).send({embeds: [Embed]})
+            // Find channel by id and send embed
+            await I.guild.channels.cache.get((await CreatedChannel).id).send({embeds: [Embed]})
 
-        if (I.values[0] == "Intern-søknad") {
-            await I.guild.channels.cache.get((await CreatedChannel).id).send(`\n Hei ${Nickname.displayName}, ` + "```\n\n Vi har mottatt din søknad om stillingen som Intern-søknad. \n\n Vi vil komme tilbake til deg så fort vi har behandlet søknaden din. \n\n Med vennlig hilsen, \n\n Helse- og omsorgsdepartementet```")
-
+            // Save ticketcount
+            await fs.writeFile("Settings.json", JSON.stringify({"TicketCount": TicketCount+1}))
+            await Logs("\nSaving TicketCount")
+            await SaveToMemory(I)
+            console.log(`\nCreate embded end`)
         }
-
-        // Save ticketcount
-        await fs.writeFile("Settings.json", JSON.stringify({"TicketCount": TicketCount+1}))
-        await Logs("\nSaving TicketCount")
-        await SaveToMemory(I)
-
-
+        
     } catch (e) {
         await Logs(e)
         return
@@ -229,6 +305,7 @@ async function SaveToMemory(ctx) {
     try {
         // Store ctx.content to file named ctx.channel.name in the folder "Memory" and append the file
         await fs.appendFile(`Memory/${ctx.channel.name}.txt`, `Author: ${ctx.author.username} Message: ${ctx.content}\n`)
+        await Logs("Saving to memory")
     } catch (e) {
         await Logs(e)
         return
