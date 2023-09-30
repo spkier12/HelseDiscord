@@ -53,9 +53,9 @@ export async function SendEmbedMenu1(ctx) {
     .setPlaceholder('Velg nedenfor for åpne sak')
     menu.addOptions(
         new D.StringSelectMenuOptionBuilder()
-            .setLabel("Henvisning til Pyskolgisk avdeling")
+            .setLabel("Henvisning til Psykologisk avdeling")
             .setValue("Pyskolgisk")
-            .setDescription('Henvisning til Pyskolgisk avdeling for behandling'),
+            .setDescription('Henvisning til Psykologisk avdeling for behandling'),
 
         new D.StringSelectMenuOptionBuilder()
             .setLabel("Henvisning til Kardiolog")
@@ -200,32 +200,32 @@ export async function CreateChannelEmebed(I, Config, TicketCount) {
         const Nickname = await I.guild.members.fetch(I.user.id)
 
         switch (I.values[0]) {
-            case "Pyskolgisk":
-                await CreateChannelEmebednotdefault("890156127512330260")
+            case "psykologisk":
+                await CreateChannelEmebednotdefault("890156127512330260", "1006265744457224212")
                 break;
             case "Kardiolog":
-                await CreateChannelEmebednotdefault("1148665904683556944")
+                await CreateChannelEmebednotdefault("1148665904683556944", "1148665904683556944")
                 break;
             case "Kirurg":
-                await CreateChannelEmebednotdefault("890156290008031233")
+                await CreateChannelEmebednotdefault("890156290008031233", "1006265581839855738")
                 break;
             case "Anestesi":
-                await CreateChannelEmebednotdefault("1093305810009997312")
+                await CreateChannelEmebednotdefault("1093305810009997312", "1006265931078578287")
                 break;
             case "Fysioterapeut":
-                await CreateChannelEmebednotdefault("1151822294797271060")
+                await CreateChannelEmebednotdefault("1151822294797271060", "1151822294797271060")
                 break;
             case "Overlege":
-                await CreateChannelEmebednotdefault("882520832671383613")
+                await CreateChannelEmebednotdefault("882520832671383613", "882520832671383613")
                 break;
             case "Lege":
-                await CreateChannelEmebednotdefault("882520835812913173")
+                await CreateChannelEmebednotdefault("882520835812913173", "882520835812913173")
                 break;
             case "Fastlege":
-                await CreateChannelEmebednotdefault("1151877809137008640")
+                await CreateChannelEmebednotdefault("1151877809137008640", "1151877809137008640")
                 break;
             case "Intern-Testing":
-                await CreateChannelEmebednotdefault("222043022450229249")
+                await CreateChannelEmebednotdefault("222043022450229249", "222043022450229249")
                 break;
             default:
                 const CreatedChannel = I.guild.channels.create({
@@ -245,7 +245,7 @@ export async function CreateChannelEmebed(I, Config, TicketCount) {
         }
 
         // If switch was not default then create the channel with default values
-        async function CreateChannelEmebednotdefault(id) {
+        async function CreateChannelEmebednotdefault(id, id2) {
             const CreatedChannel = I.guild.channels.create({
                 name: `${I.values[0]} ${TicketCount}}`,
                 type: D.ChannelType.GuildText,
@@ -255,6 +255,7 @@ export async function CreateChannelEmebed(I, Config, TicketCount) {
                     {id: I.user.id, allow: ['1024']},
                     {id: "1138905077759889501", allow: ['1024']},
                     {id: id, allow: ['1024']},
+                    {id: id2, allow: ['1024']},
                  ]
             });
 
